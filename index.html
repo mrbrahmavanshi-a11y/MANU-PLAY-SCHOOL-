@@ -3,157 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Jungle Adventure Alphabet Learn</title>
+    <title>Manu Play SCHOOL</title>
     <style>
         * {
             box-sizing: border-box;
             user-select: none;
             -webkit-user-select: none;
+            -webkit-touch-callout: none;
             margin: 0;
             padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             touch-action: manipulation;
-            font-family: 'Segoe UI', Roboto, 'Comic Sans MS', sans-serif;
         }
 
         html, body {
             width: 100%;
             height: 100%;
+            height: 100dvh;
             overflow: hidden;
             background: #0f172a;
-            color: #fff;
+            color: #ffffff;
         }
 
-        /* ---------------- Loading Screen ---------------- */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #app-container {
+            width: 100%;
+            height: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background: #1e293b;
+        }
+
+        /* Loading Screen */
         #loading-screen {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.7)),
-                        url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1200') center/cover no-repeat;
+            position: absolute;
+            inset: 0;
+            z-index: 50;
+            background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.85)),
+                        url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&q=80') center/cover no-repeat;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 100;
-            padding: 20px;
-        }
-
-        .splash-card {
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(8px);
-            padding: 25px 20px;
-            border-radius: 24px;
-            border: 3px solid #f59e0b;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            padding: 24px;
             text-align: center;
-            width: 90%;
-            max-width: 380px;
         }
 
-        .game-title {
-            font-size: clamp(22px, 6vw, 32px);
+        .game-badge {
+            background: #f59e0b;
+            color: #78350f;
             font-weight: 900;
-            color: #fbbf24;
-            text-shadow: 2px 2px 0px #b45309, 0 0 10px rgba(251, 191, 36, 0.5);
-            margin-bottom: 8px;
-            letter-spacing: 0.5px;
+            font-size: clamp(12px, 3.5vw, 14px);
+            padding: 6px 16px;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
         }
 
-        .subtitle {
-            color: #e2e8f0;
-            font-size: 14px;
-            margin-bottom: 20px;
+        .loading-title {
+            font-size: clamp(26px, 7.5vw, 36px);
+            font-weight: 900;
+            color: #fef08a;
+            text-shadow: 0 3px 0 #b45309, 0 6px 12px rgba(0,0,0,0.5);
+            margin-bottom: 24px;
+            line-height: 1.2;
         }
 
         .progress-container {
-            width: 100%;
-            height: 22px;
+            width: 85%;
+            max-width: 280px;
+            height: 18px;
             background: rgba(255, 255, 255, 0.15);
-            border-radius: 12px;
-            overflow: hidden;
-            border: 2px solid #fbbf24;
-            position: relative;
+            border: 2px solid #f59e0b;
+            border-radius: 999px;
+            padding: 2px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         }
 
         .progress-bar {
             width: 0%;
             height: 100%;
             background: linear-gradient(90deg, #10b981, #34d399);
-            transition: width 0.1s linear;
+            border-radius: 999px;
+            transition: width 0.1s ease;
         }
 
-        .start-btn {
-            display: none;
-            margin-top: 15px;
-            width: 100%;
-            padding: 14px;
-            font-size: 18px;
-            font-weight: bold;
-            color: #fff;
-            background: linear-gradient(180deg, #22c55e, #15803d);
-            border: none;
-            border-radius: 16px;
-            box-shadow: 0 5px 0 #166534, 0 10px 15px rgba(0,0,0,0.3);
-            cursor: pointer;
-            animation: pulse 1.5s infinite;
+        .loading-text {
+            margin-top: 12px;
+            font-size: 14px;
+            color: #cbd5e1;
+            font-weight: 600;
         }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.03); }
-        }
-
-        /* ---------------- Main Game Layout ---------------- */
+        /* Main Game Layout */
         #game-screen {
-            display: none;
-            width: 100vw;
-            height: 100vh;
-            height: -webkit-fill-available;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
-            padding: clamp(10px, 2vh, 20px) 15px;
-            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
-            position: relative;
-        }
-
-        /* Top Bar Controls */
-        .top-bar {
-            width: 100%;
-            max-width: 500px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 8px;
-            z-index: 10;
-        }
-
-        .mode-toggle {
-            display: flex;
-            background: rgba(255,255,255,0.1);
-            padding: 4px;
-            border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.2);
             flex: 1;
-            max-width: 280px;
+            display: flex;
+            flex-direction: column;
+            padding: calc(env(safe-area-inset-top) + 12px) 16px calc(env(safe-area-inset-bottom) + 12px) 16px;
+            gap: 12px;
+            height: 100%;
+        }
+
+        /* Header / Controls Bar */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .mode-selector {
+            display: flex;
+            background: #0f172a;
+            padding: 4px;
+            border-radius: 999px;
+            border: 1px solid #334155;
+            flex: 1;
         }
 
         .mode-btn {
             flex: 1;
-            padding: 8px 10px;
-            font-size: clamp(12px, 3.5vw, 15px);
-            font-weight: 700;
             border: none;
-            border-radius: 16px;
             background: transparent;
             color: #94a3b8;
+            font-weight: 700;
+            font-size: clamp(12px, 3.5vw, 14px);
+            padding: 8px 12px;
+            border-radius: 999px;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
         }
 
         .mode-btn.active {
-            background: #f59e0b;
-            color: #fff;
-            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
+            background: #3b82f6;
+            color: #ffffff;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
         }
 
         .icon-btn {
@@ -161,406 +155,270 @@
             height: 42px;
             border-radius: 50%;
             border: none;
-            background: rgba(255,255,255,0.15);
-            color: #fff;
-            font-size: 20px;
+            background: #334155;
+            color: #f8fafc;
+            font-size: 18px;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
             box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-            border: 1px solid rgba(255,255,255,0.2);
+            flex-shrink: 0;
         }
 
-        /* Flashcard Container */
-        .card-stage {
+        .icon-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Main Flashcard Card */
+        .card-wrapper {
             flex: 1;
-            width: 100%;
-            max-width: 450px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            perspective: 1000px;
-            margin: 10px 0;
-            min-height: 0; /* Prevents overflow in flexbox */
-        }
-
-        .flashcard {
-            width: 100%;
-            max-height: 100%;
-            aspect-ratio: 4/5;
-            background: #1e293b;
-            border: 4px solid #f59e0b;
-            border-radius: 28px;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(245, 158, 11, 0.2);
             display: flex;
             flex-direction: column;
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            border: 3px solid #fbbf24;
+            border-radius: 24px;
+            padding: 12px;
+            position: relative;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
             justify-content: space-between;
             align-items: center;
-            padding: clamp(12px, 2vh, 20px);
-            position: relative;
-            transition: transform 0.25s ease-out, opacity 0.25s ease-out;
-            cursor: pointer;
+            overflow: hidden;
         }
 
-        .flashcard.slide-out-left {
-            transform: translateX(-120%) rotate(-10deg);
-            opacity: 0;
-        }
-        .flashcard.slide-out-right {
-            transform: translateX(120%) rotate(10deg);
-            opacity: 0;
-        }
-        .flashcard.slide-in {
-            animation: slideIn 0.3s forwards ease-out;
-        }
-
-        @keyframes slideIn {
-            from { transform: scale(0.85); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        .letter-header {
+        .card-header {
+            width: 100%;
             display: flex;
-            align-items: baseline;
-            gap: 12px;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 8px;
         }
 
-        .letter-display {
-            font-size: clamp(55px, 12vh, 85px);
+        .letter-badge {
+            font-size: clamp(48px, 14vw, 70px);
             font-weight: 900;
             color: #fbbf24;
             line-height: 1;
-            text-shadow: 3px 3px 0px #b45309;
+            text-shadow: 0 3px 6px rgba(0,0,0,0.4);
         }
 
-        .word-display {
-            font-size: clamp(22px, 5vw, 30px);
+        .word-info {
+            text-align: right;
+        }
+
+        .primary-word {
+            font-size: clamp(20px, 5.5vw, 28px);
             font-weight: 800;
             color: #f8fafc;
-            letter-spacing: 0.5px;
         }
 
-        .image-wrapper {
-            flex: 1;
+        .secondary-word {
+            font-size: clamp(14px, 4vw, 18px);
+            font-weight: 600;
+            color: #38bdf8;
+        }
+
+        /* Real Image Container */
+        .image-container {
             width: 100%;
-            max-height: 62%;
-            background: #ffffff;
-            border-radius: 20px;
+            max-width: 320px;
+            flex: 1;
+            max-height: 52%;
+            aspect-ratio: 1 / 1;
+            background: #020617;
+            border-radius: 18px;
             overflow: hidden;
+            border: 2px solid #334155;
+            position: relative;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.6);
             display: flex;
             justify-content: center;
             align-items: center;
-            border: 3px solid #38bdf8;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-            position: relative;
-            margin: 8px 0;
+            margin: 6px 0;
         }
 
-        .image-wrapper img {
+        .image-container img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.3s;
+            transition: transform 0.3s ease;
         }
 
-        .flashcard:active .image-wrapper img {
-            transform: scale(1.05);
-        }
-
-        .tap-hint {
-            font-size: 13px;
-            color: #94a3b8;
+        /* Repeat Status Badge */
+        .repeat-badge {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid #f59e0b;
+            color: #fef08a;
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-size: clamp(12px, 3.5vw, 14px);
+            font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 5px;
-            font-weight: 600;
+            gap: 6px;
         }
 
         /* Bottom Controls */
-        .controls-bar {
-            width: 100%;
-            max-width: 450px;
+        .bottom-controls {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
+            width: 100%;
         }
 
         .nav-btn {
-            width: clamp(55px, 14vw, 70px);
-            height: clamp(55px, 14vw, 70px);
+            width: clamp(52px, 15vw, 64px);
+            height: clamp(52px, 15vw, 64px);
             border-radius: 50%;
             border: none;
-            background: linear-gradient(180deg, #38bdf8, #0284c7);
-            color: white;
-            font-size: clamp(24px, 6vw, 32px);
+            background: #2563eb;
+            color: #ffffff;
+            font-size: 22px;
             font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 6px 0 #0369a1, 0 10px 15px rgba(0,0,0,0.3);
             display: flex;
             justify-content: center;
             align-items: center;
+            box-shadow: 0 6px 0 #1d4ed8, 0 8px 12px rgba(0,0,0,0.3);
+            cursor: pointer;
+            flex-shrink: 0;
         }
 
         .nav-btn:active {
             transform: translateY(4px);
-            box-shadow: 0 2px 0 #0369a1;
+            box-shadow: 0 2px 0 #1d4ed8, 0 4px 6px rgba(0,0,0,0.3);
         }
 
         .speak-btn {
             flex: 1;
-            height: clamp(50px, 12vw, 65px);
-            background: linear-gradient(180deg, #f43f5e, #be123c);
+            height: clamp(48px, 14vw, 58px);
+            border-radius: 999px;
             border: none;
-            border-radius: 20px;
-            color: white;
-            font-size: clamp(16px, 4.5vw, 22px);
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: #ffffff;
+            font-size: clamp(15px, 4.2vw, 18px);
             font-weight: 800;
-            cursor: pointer;
-            box-shadow: 0 6px 0 #881337, 0 10px 15px rgba(0,0,0,0.3);
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 8px;
+            box-shadow: 0 6px 0 #b91c1c, 0 8px 12px rgba(0,0,0,0.3);
+            cursor: pointer;
         }
 
         .speak-btn:active {
             transform: translateY(4px);
-            box-shadow: 0 2px 0 #881337;
-        }
-
-        /* Tablet Adjustments */
-        @media (min-width: 600px) and (min-height: 700px) {
-            .card-stage {
-                max-width: 520px;
-            }
-            .flashcard {
-                padding: 25px;
-            }
-            .letter-display { font-size: 95px; }
-            .word-display { font-size: 36px; }
+            box-shadow: 0 2px 0 #b91c1c, 0 4px 6px rgba(0,0,0,0.3);
         }
     </style>
 </head>
 <body>
 
-    <div id="loading-screen">
-        <div class="splash-card">
-            <div class="game-title">🎮 JUNGLE LEARNING ADVENTURE 🏕️</div>
-            <div class="subtitle">A to Z and अ से ज्ञ - Interactive Learning</div>
-            
-            <div class="progress-container" id="prog-box">
+    <div id="app-container">
+        <!-- Adventure Loading Screen -->
+        <div id="loading-screen">
+            <div class="game-badge">🎮 Adventure Learn</div>
+            <div class="loading-title">Jungle Kids<br>Learning Game</div>
+            <div class="progress-container">
                 <div class="progress-bar" id="p-bar"></div>
             </div>
-
-            <button class="start-btn" id="start-btn" onclick="startGame()">▶ GAME START</button>
-        </div>
-    </div>
-
-    <div id="game-screen">
-        <!-- Top Navigation & Audio Control -->
-        <div class="top-bar">
-            <div class="mode-toggle">
-                <button class="mode-btn active" id="btn-en" onclick="setMode('en')">English A-Z</button>
-                <button class="mode-btn" id="btn-hi" onclick="setMode('hi')">हिंदी अ-ज्ञ</button>
-            </div>
-            <button class="icon-btn" id="music-btn" onclick="toggleMusic()" title="Toggle Music">🎵</button>
+            <div class="loading-text" id="loading-status">Loading Game Resources...</div>
         </div>
 
-        <!-- Interactive Flashcard Area -->
-        <div class="card-stage">
-            <div class="flashcard" id="card" onclick="speakCurrent()">
-                <div class="letter-header">
-                    <span class="letter-display" id="letter">A</span>
-                    <span class="word-display" id="word">Apple</span>
+        <!-- Main Game Area -->
+        <div id="game-screen">
+            <!-- Top Controls -->
+            <div class="top-bar">
+                <div class="mode-selector">
+                    <button class="mode-btn active" id="btn-en" onclick="setMode('en')">English (A-Z)</button>
+                    <button class="mode-btn" id="btn-hi" onclick="setMode('hi')">हिंदी (अ-ज्ञ)</button>
                 </div>
-                
-                <div class="image-wrapper">
-                    <img id="real-img" src="" alt="Learning item" onerror="this.src='https://placehold.co/400x400/22c55e/ffffff?text=Learning+Fun'">
+                <button class="icon-btn" id="music-btn" onclick="toggleMusic()" title="Background Music">🎵</button>
+            </div>
+
+            <!-- Flashcard Display -->
+            <div class="card-wrapper" id="swipe-zone">
+                <div class="card-header">
+                    <div class="letter-badge" id="letter">A</div>
+                    <div class="word-info">
+                        <div class="primary-word" id="primary-word">Apple</div>
+                        <div class="secondary-word" id="secondary-word">सेब</div>
+                    </div>
                 </div>
 
-                <div class="tap-hint">🔊 फोटो या बटन पर टच करके सुनें</div>
-            </div>
-        </div>
+                <div class="image-container">
+                    <img id="real-img" src="" alt="Learning Object">
+                </div>
 
-        <!-- Navigation & Voice Controls -->
-        <div class="controls-bar">
-            <button class="nav-btn" onclick="prevCard()" aria-label="Previous">◀</button>
-            <button class="speak-btn" onclick="speakCurrent()">🔊 बोलकर सुनाएं</button>
-            <button class="nav-btn" onclick="nextCard()" aria-label="Next">▶</button>
+                <div class="repeat-badge">
+                    <span>🔁 दोहराव:</span>
+                    <span id="repeat-count">1</span> / 5
+                </div>
+            </div>
+
+            <!-- Bottom Control Buttons -->
+            <div class="bottom-controls">
+                <button class="nav-btn" onclick="prevCard()" aria-label="Previous">◀</button>
+                <button class="speak-btn" onclick="manualSpeakRepeat()" aria-label="Listen Voice">
+                    <span>🔊 फिर से सुनें</span>
+                </button>
+                <button class="nav-btn" onclick="nextCard()" aria-label="Next">▶</button>
+            </div>
         </div>
     </div>
 
     <script>
-        /* ---------------- Alphabet Data with High Quality Images ---------------- */
+        // High Quality Real Image Dataset with English + Hindi Translations
         const dataEn = [
-            { l: "A", w: "Apple", img: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=600" },
-            { l: "B", w: "Ball", img: "https://images.unsplash.com/photo-1614632537190-23e4146777db?w=600" },
-            { l: "C", w: "Cat", img: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600" },
-            { l: "D", w: "Dog", img: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=600" },
-            { l: "E", w: "Elephant", img: "https://images.unsplash.com/photo-1557050543-4d5f4e07ef46?w=600" },
-            { l: "F", w: "Fish", img: "https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?w=600" },
-            { l: "G", w: "Grapes", img: "https://images.unsplash.com/photo-1537640538966-79f369143f8f?w=600" },
-            { l: "H", w: "Horse", img: "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?w=600" },
-            { l: "I", w: "Ice Cream", img: "https://images.unsplash.com/photo-1560008581-09826d1de69e?w=600" },
-            { l: "J", w: "Jug", img: "https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=600" },
-            { l: "K", w: "Kite", img: "https://images.unsplash.com/photo-1508614589041-895b88991e3e?w=600" },
-            { l: "L", w: "Lion", img: "https://images.unsplash.com/photo-1614027164847-1b28cfe1df60?w=600" },
-            { l: "M", w: "Monkey", img: "https://images.unsplash.com/photo-1540573133985-780688d1728b?w=600" },
-            { l: "N", w: "Nest", img: "https://images.unsplash.com/photo-1520808663317-647b476a81b9?w=600" },
-            { l: "O", w: "Orange", img: "https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?w=600" },
-            { l: "P", w: "Parrot", img: "https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=600" },
-            { l: "Q", w: "Queen", img: "https://images.unsplash.com/photo-1582201942988-13e60e4556ee?w=600" },
-            { l: "R", w: "Rabbit", img: "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=600" },
-            { l: "S", w: "Sun", img: "https://images.unsplash.com/photo-1617142108319-66c7ab45c711?w=600" },
-            { l: "T", w: "Tiger", img: "https://images.unsplash.com/photo-1561731216-c3a4d99437d5?w=600" },
-            { l: "U", w: "Umbrella", img: "https://images.unsplash.com/photo-1517479149777-5f3b6511d5ad?w=600" },
-            { l: "V", w: "Van", img: "https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=600" },
-            { l: "W", w: "Watch", img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600" },
-            { l: "X", w: "Xylophone", img: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600" },
-            { l: "Y", w: "Yak", img: "https://images.unsplash.com/photo-1564349683136-77e08dba1ef9?w=600" },
-            { l: "Z", w: "Zebra", img: "https://images.unsplash.com/photo-1501705388883-4ed8a543392c?w=600" }
+            { l: "A", w: "Apple", hiW: "सेब", img: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=600&q=80" },
+            { l: "B", w: "Ball", hiW: "गेंद", img: "https://images.unsplash.com/photo-1614632537190-23e4146777db?w=600&q=80" },
+            { l: "C", w: "Cat", hiW: "बिल्ली", img: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600&q=80" },
+            { l: "D", w: "Dog", hiW: "कुत्ता", img: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=600&q=80" },
+            { l: "E", w: "Elephant", hiW: "हाथी", img: "https://images.unsplash.com/photo-1557050543-4d5f4e07ef46?w=600&q=80" },
+            { l: "F", w: "Fish", hiW: "मछली", img: "https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?w=600&q=80" },
+            { l: "G", w: "Grapes", hiW: "अंगूर", img: "https://images.unsplash.com/photo-1537640538966-79f369143f8f?w=600&q=80" },
+            { l: "H", w: "Horse", hiW: "घोड़ा", img: "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?w=600&q=80" }
         ];
 
         const dataHi = [
-            { l: "अ", w: "अनार", img: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=600" },
-            { l: "आ", w: "आम", img: "https://images.unsplash.com/photo-1553279768-865429fa0078?w=600" },
-            { l: "इ", w: "इमली", img: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=600" },
-            { l: "ई", w: "ईख", img: "https://images.unsplash.com/photo-1527847263472-aa5338d178b8?w=600" },
-            { l: "उ", w: "उल्लू", img: "https://images.unsplash.com/photo-1543549790-8b5f4a028cfb?w=600" },
-            { l: "ऊ", w: "ऊन", img: "https://images.unsplash.com/photo-1584992236310-6edddc08acff?w=600" },
-            { l: "क", w: "कमल", img: "https://images.unsplash.com/photo-1508615070457-7ba34003ab59?w=600" },
-            { l: "ख", w: "खरगोश", img: "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=600" },
-            { l: "ग", w: "गमला", img: "https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=600" },
-            { l: "घ", w: "घर", img: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=600" },
-            { l: "छ", w: "छतरी", img: "https://images.unsplash.com/photo-1517479149777-5f3b6511d5ad?w=600" },
-            { l: "ज", w: "जहाज", img: "https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=600" },
-            { l: "ट", w: "टमाटर", img: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600" },
-            { l: "पतंग", w: "पतंग", img: "https://images.unsplash.com/photo-1508614589041-895b88991e3e?w=600" },
-            { l: "फ", w: "फल", img: "https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=600" },
-            { l: "ब", w: "बस", img: "https://images.unsplash.com/photo-1570125909232-eb263c188f7e?w=600" },
-            { l: "म", w: "मछली", img: "https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?w=600" },
-            { l: "य", w: "यज्ञ", img: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=600" },
-            { l: "र", w: "रथ", img: "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?w=600" },
-            { l: "ल", w: "लट्टू", img: "https://images.unsplash.com/photo-1516981879613-9f5da904015f?w=600" },
-            { l: "स", w: "सेब", img: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=600" },
-            { l: "ह", w: "हाथी", img: "https://images.unsplash.com/photo-1557050543-4d5f4e07ef46?w=600" }
+            { l: "अ", w: "अनार", hiW: "Pomegranate", img: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=600&q=80" },
+            { l: "आ", w: "आम", hiW: "Mango", img: "https://images.unsplash.com/photo-1553279768-865429fa0078?w=600&q=80" },
+            { l: "इ", w: "इमली", hiW: "Tamarind", img: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=600&q=80" },
+            { l: "उ", w: "उल्लू", hiW: "Owl", img: "https://images.unsplash.com/photo-1543549790-8b5f4a028cfb?w=600&q=80" },
+            { l: "क", w: "कमल", hiW: "Lotus", img: "https://images.unsplash.com/photo-1508615070457-7ba34003ab59?w=600&q=80" },
+            { l: "ख", w: "खरगोश", hiW: "Rabbit", img: "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=600&q=80" }
         ];
 
-        /* State Variables */
         let currentMode = 'en';
         let currentIndex = 0;
-        let isMusicPlaying = false;
+        let repeatCounter = 1;
+        let repeatTimeout = null;
+
+        // Web Audio Synthesizer for Background Music
         let audioCtx = null;
+        let isMusicPlaying = false;
         let musicTimer = null;
 
-        /* ---------------- Progress Bar & Loading ---------------- */
-        window.addEventListener('load', () => {
+        window.onload = () => {
             let pBar = document.getElementById('p-bar');
-            let startBtn = document.getElementById('start-btn');
-            let progBox = document.getElementById('prog-box');
+            let statusText = document.getElementById('loading-status');
             let width = 0;
 
             let interval = setInterval(() => {
                 width += 10;
                 pBar.style.width = width + '%';
+                if (width === 40) statusText.innerText = "Setting Up Voices...";
+                if (width === 80) statusText.innerText = "Preparing Adventure Theme...";
                 if (width >= 100) {
                     clearInterval(interval);
-                    progBox.style.display = 'none';
-                    startBtn.style.display = 'block';
+                    setTimeout(() => {
+                        document.getElementById('loading-screen').style.display = 'none';
+                        updateCard();
+                    }, 300);
                 }
-            }, 100);
-        });
+            }, 80);
+        };
 
-        function startGame() {
-            document.getElementById('loading-screen').style.display = 'none';
-            document.getElementById('game-screen').style.display = 'flex';
-            initAudio();
-            updateCard();
-        }
-
-        /* ---------------- Web Audio API (Offline Music Generator) ---------------- */
-        function initAudio() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-            toggleMusic(true);
-        }
-
-        function playNote(freq, duration, delay = 0) {
-            if (!isMusicPlaying || !audioCtx) return;
-            setTimeout(() => {
-                try {
-                    let osc = audioCtx.createOscillator();
-                    let gain = audioCtx.createGain();
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-                    gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.start();
-                    osc.stop(audioCtx.currentTime + duration);
-                } catch(e) {}
-            }, delay);
-        }
-
-        function startMelodyLoop() {
-            if (musicTimer) clearInterval(musicTimer);
-            const notes = [261.63, 329.63, 392.00, 523.25, 392.00, 329.63]; // C E G C G E cheerful melody
-            let i = 0;
-            musicTimer = setInterval(() => {
-                if (isMusicPlaying) {
-                    playNote(notes[i], 0.4);
-                    i = (i + 1) % notes.length;
-                }
-            }, 500);
-        }
-
-        function toggleMusic(forceState = null) {
-            isMusicPlaying = forceState !== null ? forceState : !isMusicPlaying;
-            document.getElementById('music-btn').innerText = isMusicPlaying ? '🎵' : '🔇';
-            if (isMusicPlaying) {
-                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                startMelodyLoop();
-            } else {
-                if (musicTimer) clearInterval(musicTimer);
-            }
-        }
-
-        /* ---------------- Speech Synthesis (Realistic Speech) ---------------- */
-        function speakCurrent() {
-            if (!('speechSynthesis' in window)) return;
-
-            let list = currentMode === 'en' ? dataEn : dataHi;
-            let item = list[currentIndex];
-            let phrase = currentMode === 'en' ? `${item.l} for ${item.w}` : `${item.l} से ${item.w}`;
-
-            window.speechSynthesis.cancel(); // Stop any pending speech
-
-            let speech = new SpeechSynthesisUtterance(phrase);
-            speech.rate = 0.82; // Clear, relaxed reading speed for kids
-            speech.pitch = 1.1; // Slightly friendly, warm pitch
-
-            let voices = window.speechSynthesis.getVoices();
-            if (currentMode === 'hi') {
-                speech.lang = 'hi-IN';
-                let hiVoice = voices.find(v => v.lang.includes('hi') || v.lang.includes('HI'));
-                if (hiVoice) speech.voice = hiVoice;
-            } else {
-                speech.lang = 'en-IN';
-                let enVoice = voices.find(v => v.lang.includes('en-IN') || v.lang.includes('en-US'));
-                if (enVoice) speech.voice = enVoice;
-            }
-
-            window.speechSynthesis.speak(speech);
-        }
-
-        /* ---------------- Card State & Switching ---------------- */
         function setMode(mode) {
             currentMode = mode;
             currentIndex = 0;
@@ -570,70 +428,155 @@
         }
 
         function updateCard() {
+            stopVoiceSequence();
             let list = currentMode === 'en' ? dataEn : dataHi;
             let item = list[currentIndex];
-            let card = document.getElementById('card');
 
-            card.classList.remove('slide-out-left', 'slide-out-right', 'slide-in');
-            
             document.getElementById('letter').innerText = item.l;
-            document.getElementById('word').innerText = item.w;
+            document.getElementById('primary-word').innerText = item.w;
+            document.getElementById('secondary-word').innerText = item.hiW;
             document.getElementById('real-img').src = item.img;
 
-            void card.offsetWidth; // Force reflow
-            card.classList.add('slide-in');
+            // Start 5 Times Audio Sequence
+            repeatCounter = 1;
+            playBilingualVoiceSequence();
+        }
 
-            speakCurrent();
+        function stopVoiceSequence() {
+            window.speechSynthesis.cancel();
+            if (repeatTimeout) {
+                clearTimeout(repeatTimeout);
+                repeatTimeout = null;
+            }
+        }
+
+        // Bilingual Pronunciation + 5-Times Repeat Logic
+        function playBilingualVoiceSequence() {
+            stopVoiceSequence();
+            document.getElementById('repeat-count').innerText = repeatCounter;
+
+            let list = currentMode === 'en' ? dataEn : dataHi;
+            let item = list[currentIndex];
+
+            if (currentMode === 'en') {
+                // English Mode: "A for Apple", then Hindi "A से सेब"
+                let enText = `${item.l} for ${item.w}`;
+                let hiText = `${item.l} से ${item.hiW}`;
+
+                let speech1 = new SpeechSynthesisUtterance(enText);
+                speech1.lang = 'en-US';
+                speech1.rate = 0.85;
+
+                let speech2 = new SpeechSynthesisUtterance(hiText);
+                speech2.lang = 'hi-IN';
+                speech2.rate = 0.85;
+
+                speech1.onend = () => {
+                    window.speechSynthesis.speak(speech2);
+                };
+
+                speech2.onend = () => {
+                    handleRepeatNext();
+                };
+
+                window.speechSynthesis.speak(speech1);
+
+            } else {
+                // Hindi Mode: "अ से अनार"
+                let hiText = `${item.l} से ${item.w}`;
+                let speech = new SpeechSynthesisUtterance(hiText);
+                speech.lang = 'hi-IN';
+                speech.rate = 0.85;
+
+                speech.onend = () => {
+                    handleRepeatNext();
+                };
+
+                window.speechSynthesis.speak(speech);
+            }
+        }
+
+        function handleRepeatNext() {
+            if (repeatCounter < 5) {
+                repeatCounter++;
+                repeatTimeout = setTimeout(() => {
+                    playBilingualVoiceSequence();
+                }, 900); // 0.9 sec delay between repeats
+            }
+        }
+
+        function manualSpeakRepeat() {
+            repeatCounter = 1;
+            playBilingualVoiceSequence();
         }
 
         function nextCard() {
             let list = currentMode === 'en' ? dataEn : dataHi;
-            let card = document.getElementById('card');
-            card.classList.add('slide-out-left');
-            
-            setTimeout(() => {
-                currentIndex = (currentIndex + 1) % list.length;
-                updateCard();
-            }, 200);
+            currentIndex = (currentIndex + 1) % list.length;
+            updateCard();
         }
 
         function prevCard() {
             let list = currentMode === 'en' ? dataEn : dataHi;
-            let card = document.getElementById('card');
-            card.classList.add('slide-out-right');
-
-            setTimeout(() => {
-                currentIndex = (currentIndex - 1 + list.length) % list.length;
-                updateCard();
-            }, 200);
+            currentIndex = (currentIndex - 1 + list.length) % list.length;
+            updateCard();
         }
 
-        /* ---------------- Touch & Swipe Handling ---------------- */
+        // Swipe Gesture Handling
         let touchStartX = 0;
-        let touchStartY = 0;
-        const cardArea = document.getElementById('card');
+        const swipeZone = document.getElementById('swipe-zone');
 
-        cardArea.addEventListener('touchstart', (e) => {
-            touchStartX = e.touches[0].clientX;
-            touchStartY = e.touches[0].clientY;
+        swipeZone.addEventListener('touchstart', e => { 
+            touchStartX = e.touches[0].clientX; 
         }, { passive: true });
 
-        cardArea.addEventListener('touchend', (e) => {
+        swipeZone.addEventListener('touchend', e => {
             let touchEndX = e.changedTouches[0].clientX;
-            let touchEndY = e.changedTouches[0].clientY;
-            
             let diffX = touchStartX - touchEndX;
-            let diffY = touchStartY - touchEndY;
 
-            // Ensure horizontal swipe is dominant
-            if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 40) {
-                if (diffX > 0) {
-                    nextCard(); // Swiped Left -> Next
-                } else {
-                    prevCard(); // Swiped Right -> Previous
-                }
+            if (Math.abs(diffX) > 40) {
+                if (diffX > 0) nextCard();
+                else prevCard();
             }
         }, { passive: true });
+
+        // Background Music
+        function toggleMusic() {
+            let btn = document.getElementById('music-btn');
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+
+            if (isMusicPlaying) {
+                isMusicPlaying = false;
+                btn.innerText = "🎵";
+                btn.style.background = "#334155";
+                if (musicTimer) clearInterval(musicTimer);
+            } else {
+                isMusicPlaying = true;
+                btn.innerText = "🔊";
+                btn.style.background = "#16a34a";
+                playAdventureTune();
+                musicTimer = setInterval(playAdventureTune, 4000);
+            }
+        }
+
+        function playAdventureTune() {
+            if (!isMusicPlaying || !audioCtx) return;
+            const notes = [261.63, 329.63, 392.00, 523.25, 392.00, 329.63];
+            notes.forEach((freq, idx) => {
+                let osc = audioCtx.createOscillator();
+                let gain = audioCtx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.value = freq;
+                gain.gain.setValueAtTime(0.04, audioCtx.currentTime + idx * 0.4);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + idx * 0.4 + 0.35);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(audioCtx.currentTime + idx * 0.4);
+                osc.stop(audioCtx.currentTime + idx * 0.4 + 0.35);
+            });
+        }
     </script>
 </body>
 </html>
