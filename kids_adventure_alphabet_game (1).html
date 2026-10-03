@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Jungle Adventure Alphabet Learn</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+            margin: 0;
+            padding: 0;
+            touch-action: manipulation;
+            font-family: 'Segoe UI', Roboto, 'Comic Sans MS', sans-serif;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #0f172a;
+            color: #fff;
+        }
+
+        /* ---------------- Loading Screen ---------------- */
+        #loading-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.7)),
+                        url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1200') center/cover no-repeat;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            padding: 20px;
+        }
+
+        .splash-card {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(8px);
+            padding: 25px 20px;
+            border-radius: 24px;
+            border: 3px solid #f59e0b;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            text-align: center;
+            width: 90%;
+            max-width: 380px;
+        }
+
+        .game-title {
+            font-size: clamp(22px, 6vw, 32px);
+            font-weight: 900;
+            color: #fbbf24;
+            text-shadow: 2px 2px 0px #b45309, 0 0 10px rgba(251, 191, 36, 0.5);
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .subtitle {
+            color: #e2e8f0;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 22px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid #fbbf24;
+            position: relative;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #34d399);
+            transition: width 0.1s linear;
+        }
+
+        .start-btn {
+            display: none;
+            margin-top: 15px;
+            width: 100%;
+            padding: 14px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+            background: linear-gradient(180deg, #22c55e, #15803d);
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 5px 0 #166534, 0 10px 15px rgba(0,0,0,0.3);
+            cursor: pointer;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+
+        /* ---------------- Main Game Layout ---------------- */
+        #game-screen {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            height: -webkit-fill-available;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: clamp(10px, 2vh, 20px) 15px;
+            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+            position: relative;
+        }
+
+        /* Top Bar Controls */
+        .top-bar {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .mode-toggle {
+            display: flex;
+            background: rgba(255,255,255,0.1);
+            padding: 4px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+            flex: 1;
+            max-width: 280px;
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 8px 10px;
+            font-size: clamp(12px, 3.5vw, 15px);
+            font-weight: 700;
+            border: none;
+            border-radius: 16px;
+            background: transparent;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .mode-btn.active {
+            background: #f59e0b;
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
+        }
+
+        .icon-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+            font-size: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        /* Flashcard Container */
+        .card-stage {
+            flex: 1;
+            width: 100%;
+            max-width: 450px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+            margin: 10px 0;
+            min-height: 0; /* Prevents overflow in flexbox */
+        }
+
+        .flashcard {
+            width: 100%;
+            max-height: 100%;
+            aspect-ratio: 4/5;
+            background: #1e293b;
+            border: 4px solid #f59e0b;
+            border-radius: 28px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(245, 158, 11, 0.2);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: clamp(12px, 2vh, 20px);
+            position: relative;
+            transition: transform 0.25s ease-out, opacity 0.25s ease-out;
+            cursor: pointer;
+        }
+
+        .flashcard.slide-out-left {
+            transform: translateX(-120%) rotate(-10deg);
+            opacity: 0;
+        }
+        .flashcard.slide-out-right {
+            transform: translateX(120%) rotate(10deg);
+            opacity: 0;
+        }
+        .flashcard.slide-in {
+            animation: slideIn 0.3s forwards ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: scale(0.85); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .letter-header {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+        }
+
+        .letter-display {
+            font-size: clamp(55px, 12vh, 85px);
+            font-weight: 900;
+            color: #fbbf24;
+            line-height: 1;
+            text-shadow: 3px 3px 0px #b45309;
+        }
+
+        .word-display {
+            font-size: clamp(22px, 5vw, 30px);
+            font-weight: 800;
+            color: #f8fafc;
+            letter-spacing: 0.5px;
+        }
+
+        .image-wrapper {
+            flex: 1;
+            width: 100%;
+            max-height: 62%;
+            background: #ffffff;
+            border-radius: 20px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 3px solid #38bdf8;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            position: relative;
+            margin: 8px 0;
+        }
+
+        .image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .flashcard:active .image-wrapper img {
+            transform: scale(1.05);
+        }
+
+        .tap-hint {
+            font-size: 13px;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 600;
+        }
+
+        /* Bottom Controls */
+        .controls-bar {
+            width: 100%;
+            max-width: 450px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .nav-btn {
+            width: clamp(55px, 14vw, 70px);
+            height: clamp(55px, 14vw, 70px);
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(180deg, #38bdf8, #0284c7);
+            color: white;
+            font-size: clamp(24px, 6vw, 32px);
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #0369a1, 0 10px 15px rgba(0,0,0,0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .nav-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #0369a1;
+        }
+
+        .speak-btn {
+            flex: 1;
+            height: clamp(50px, 12vw, 65px);
+            background: linear-gradient(180deg, #f43f5e, #be123c);
+            border: none;
+            border-radius: 20px;
+            color: white;
+            font-size: clamp(16px, 4.5vw, 22px);
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #881337, 0 10px 15px rgba(0,0,0,0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .speak-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #881337;
+        }
+
+        /* Tablet Adjustments */
+        @media (min-width: 600px) and (min-height: 700px) {
+            .card-stage {
+                max-width: 520px;
+            }
+            .flashcard {
+                padding: 25px;
+            }
+            .letter-display { font-size: 95px; }
+            .word-display { font-size: 36px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loading-screen">
+        <div class="splash-card">
+            <div class="game-title">🎮 JUNGLE LEARNING ADVENTURE 🏕️</div>
+            <div class="subtitle">A to Z and अ से ज्ञ - Interactive Learning</div>
+            
+            <div class="progress-container" id="prog-box">
+                <div class="progress-bar" id="p-bar"></div>
+            </div>
+
+            <button class="start-btn" id="start-btn" onclick="startGame()">▶ GAME START</button>
+        </div>
+    </div>
+
+    <div id="game-screen">
+        <!-- Top Navigation & Audio Control -->
+        <div class="top-bar">
+            <div class="mode-toggle">
+                <button class="mode-btn active" id="btn-en" onclick="setMode('en')">English A-Z</button>
+                <button class="mode-btn" id="btn-hi" onclick="setMode('hi')">हिंदी अ-ज्ञ</button>
+            </div>
+            <button class="icon-btn" id="music-btn" onclick="toggleMusic()" title="Toggle Music">🎵</button>
+        </div>
+
+        <!-- Interactive Flashcard Area -->
+        <div class="card-stage">
+            <div class="flashcard" id="card" onclick="speakCurrent()">
+                <div class="letter-header">
+                    <span class="letter-display" id="letter">A</span>
+                    <span class="word-display" id="word">Apple</span>
+                </div>
+                
+                <div class="image-wrapper">
+                    <img id="real-img" src="" alt="Learning item" onerror="this.src='https://placehold.co/400x400/22c55e/ffffff?text=Learning+Fun'">
+                </div>
+
+                <div class="tap-hint">🔊 फोटो या बटन पर टच करके सुनें</div>
+            </div>
+        </div>
+
+        <!-- Navigation & Voice Controls -->
+        <div class="controls-bar">
+            <button class="nav-btn" onclick="prevCard()" aria-label="Previous">◀</button>
+            <button class="speak-btn" onclick="speakCurrent()">🔊 बोलकर सुनाएं</button>
+            <button class="nav-btn" onclick="nextCard()" aria-label="Next">▶</button>
+        </div>
+    </div>
+
+    <script>
+        /* ---------------- Alphabet Data with High Quality Images ---------------- */
+        const dataEn = [
+            { l: "A", w: "Apple", img: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=600" },
+            { l: "B", w: "Ball", img: "https://images.unsplash.com/photo-1614632537190-23e4146777db?w=600" },
+            { l: "C", w: "Cat", img: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600" },
+            { l: "D", w: "Dog", img: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=600" },
+            { l: "E", w: "Elephant", img: "https://images.unsplash.com/photo-1557050543-4d5f4e07ef46?w=600" },
+            { l: "F", w: "Fish", img: "https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?w=600" },
+            { l: "G", w: "Grapes", img: "https://images.unsplash.com/photo-1537640538966-79f369143f8f?w=600" },
+            { l: "H", w: "Horse", img: "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?w=600" },
+            { l: "I", w: "Ice Cream", img: "https://images.unsplash.com/photo-1560008581-09826d1de69e?w=600" },
+            { l: "J", w: "Jug", img: "https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=600" },
+            { l: "K", w: "Kite", img: "https://images.unsplash.com/photo-1508614589041-895b88991e3e?w=600" },
+            { l: "L", w: "Lion", img: "https://images.unsplash.com/photo-1614027164847-1b28cfe1df60?w=600" },
+            { l: "M", w: "Monkey", img: "https://images.unsplash.com/photo-1540573133985-780688d1728b?w=600" },
+            { l: "N", w: "Nest", img: "https://images.unsplash.com/photo-1520808663317-647b476a81b9?w=600" },
+            { l: "O", w: "Orange", img: "https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?w=600" },
+            { l: "P", w: "Parrot", img: "https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=600" },
+            { l: "Q", w: "Queen", img: "https://images.unsplash.com/photo-1582201942988-13e60e4556ee?w=600" },
+            { l: "R", w: "Rabbit", img: "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=600" },
+            { l: "S", w: "Sun", img: "https://images.unsplash.com/photo-1617142108319-66c7ab45c711?w=600" },
+            { l: "T", w: "Tiger", img: "https://images.unsplash.com/photo-1561731216-c3a4d99437d5?w=600" },
+            { l: "U", w: "Umbrella", img: "https://images.unsplash.com/photo-1517479149777-5f3b6511d5ad?w=600" },
+            { l: "V", w: "Van", img: "https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=600" },
+            { l: "W", w: "Watch", img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600" },
+            { l: "X", w: "Xylophone", img: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600" },
+            { l: "Y", w: "Yak", img: "https://images.unsplash.com/photo-1564349683136-77e08dba1ef9?w=600" },
+            { l: "Z", w: "Zebra", img: "https://images.unsplash.com/photo-1501705388883-4ed8a543392c?w=600" }
+        ];
+
+        const dataHi = [
+            { l: "अ", w: "अनार", img: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=600" },
+            { l: "आ", w: "आम", img: "https://images.unsplash.com/photo-1553279768-865429fa0078?w=600" },
+            { l: "इ", w: "इमली", img: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=600" },
+            { l: "ई", w: "ईख", img: "https://images.unsplash.com/photo-1527847263472-aa5338d178b8?w=600" },
+            { l: "उ", w: "उल्लू", img: "https://images.unsplash.com/photo-1543549790-8b5f4a028cfb?w=600" },
+            { l: "ऊ", w: "ऊन", img: "https://images.unsplash.com/photo-1584992236310-6edddc08acff?w=600" },
+            { l: "क", w: "कमल", img: "https://images.unsplash.com/photo-1508615070457-7ba34003ab59?w=600" },
+            { l: "ख", w: "खरगोश", img: "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=600" },
+            { l: "ग", w: "गमला", img: "https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=600" },
+            { l: "घ", w: "घर", img: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=600" },
+            { l: "छ", w: "छतरी", img: "https://images.unsplash.com/photo-1517479149777-5f3b6511d5ad?w=600" },
+            { l: "ज", w: "जहाज", img: "https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=600" },
+            { l: "ट", w: "टमाटर", img: "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600" },
+            { l: "पतंग", w: "पतंग", img: "https://images.unsplash.com/photo-1508614589041-895b88991e3e?w=600" },
+            { l: "फ", w: "फल", img: "https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=600" },
+            { l: "ब", w: "बस", img: "https://images.unsplash.com/photo-1570125909232-eb263c188f7e?w=600" },
+            { l: "म", w: "मछली", img: "https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?w=600" },
+            { l: "य", w: "यज्ञ", img: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=600" },
+            { l: "र", w: "रथ", img: "https://images.unsplash.com/photo-1553284965-83fd3e82fa5a?w=600" },
+            { l: "ल", w: "लट्टू", img: "https://images.unsplash.com/photo-1516981879613-9f5da904015f?w=600" },
+            { l: "स", w: "सेब", img: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=600" },
+            { l: "ह", w: "हाथी", img: "https://images.unsplash.com/photo-1557050543-4d5f4e07ef46?w=600" }
+        ];
+
+        /* State Variables */
+        let currentMode = 'en';
+        let currentIndex = 0;
+        let isMusicPlaying = false;
+        let audioCtx = null;
+        let musicTimer = null;
+
+        /* ---------------- Progress Bar & Loading ---------------- */
+        window.addEventListener('load', () => {
+            let pBar = document.getElementById('p-bar');
+            let startBtn = document.getElementById('start-btn');
+            let progBox = document.getElementById('prog-box');
+            let width = 0;
+
+            let interval = setInterval(() => {
+                width += 10;
+                pBar.style.width = width + '%';
+                if (width >= 100) {
+                    clearInterval(interval);
+                    progBox.style.display = 'none';
+                    startBtn.style.display = 'block';
+                }
+            }, 100);
+        });
+
+        function startGame() {
+            document.getElementById('loading-screen').style.display = 'none';
+            document.getElementById('game-screen').style.display = 'flex';
+            initAudio();
+            updateCard();
+        }
+
+        /* ---------------- Web Audio API (Offline Music Generator) ---------------- */
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            toggleMusic(true);
+        }
+
+        function playNote(freq, duration, delay = 0) {
+            if (!isMusicPlaying || !audioCtx) return;
+            setTimeout(() => {
+                try {
+                    let osc = audioCtx.createOscillator();
+                    let gain = audioCtx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                    gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + duration);
+                } catch(e) {}
+            }, delay);
+        }
+
+        function startMelodyLoop() {
+            if (musicTimer) clearInterval(musicTimer);
+            const notes = [261.63, 329.63, 392.00, 523.25, 392.00, 329.63]; // C E G C G E cheerful melody
+            let i = 0;
+            musicTimer = setInterval(() => {
+                if (isMusicPlaying) {
+                    playNote(notes[i], 0.4);
+                    i = (i + 1) % notes.length;
+                }
+            }, 500);
+        }
+
+        function toggleMusic(forceState = null) {
+            isMusicPlaying = forceState !== null ? forceState : !isMusicPlaying;
+            document.getElementById('music-btn').innerText = isMusicPlaying ? '🎵' : '🔇';
+            if (isMusicPlaying) {
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                startMelodyLoop();
+            } else {
+                if (musicTimer) clearInterval(musicTimer);
+            }
+        }
+
+        /* ---------------- Speech Synthesis (Realistic Speech) ---------------- */
+        function speakCurrent() {
+            if (!('speechSynthesis' in window)) return;
+
+            let list = currentMode === 'en' ? dataEn : dataHi;
+            let item = list[currentIndex];
+            let phrase = currentMode === 'en' ? `${item.l} for ${item.w}` : `${item.l} से ${item.w}`;
+
+            window.speechSynthesis.cancel(); // Stop any pending speech
+
+            let speech = new SpeechSynthesisUtterance(phrase);
+            speech.rate = 0.82; // Clear, relaxed reading speed for kids
+            speech.pitch = 1.1; // Slightly friendly, warm pitch
+
+            let voices = window.speechSynthesis.getVoices();
+            if (currentMode === 'hi') {
+                speech.lang = 'hi-IN';
+                let hiVoice = voices.find(v => v.lang.includes('hi') || v.lang.includes('HI'));
+                if (hiVoice) speech.voice = hiVoice;
+            } else {
+                speech.lang = 'en-IN';
+                let enVoice = voices.find(v => v.lang.includes('en-IN') || v.lang.includes('en-US'));
+                if (enVoice) speech.voice = enVoice;
+            }
+
+            window.speechSynthesis.speak(speech);
+        }
+
+        /* ---------------- Card State & Switching ---------------- */
+        function setMode(mode) {
+            currentMode = mode;
+            currentIndex = 0;
+            document.getElementById('btn-en').classList.toggle('active', mode === 'en');
+            document.getElementById('btn-hi').classList.toggle('active', mode === 'hi');
+            updateCard();
+        }
+
+        function updateCard() {
+            let list = currentMode === 'en' ? dataEn : dataHi;
+            let item = list[currentIndex];
+            let card = document.getElementById('card');
+
+            card.classList.remove('slide-out-left', 'slide-out-right', 'slide-in');
+            
+            document.getElementById('letter').innerText = item.l;
+            document.getElementById('word').innerText = item.w;
+            document.getElementById('real-img').src = item.img;
+
+            void card.offsetWidth; // Force reflow
+            card.classList.add('slide-in');
+
+            speakCurrent();
+        }
+
+        function nextCard() {
+            let list = currentMode === 'en' ? dataEn : dataHi;
+            let card = document.getElementById('card');
+            card.classList.add('slide-out-left');
+            
+            setTimeout(() => {
+                currentIndex = (currentIndex + 1) % list.length;
+                updateCard();
+            }, 200);
+        }
+
+        function prevCard() {
+            let list = currentMode === 'en' ? dataEn : dataHi;
+            let card = document.getElementById('card');
+            card.classList.add('slide-out-right');
+
+            setTimeout(() => {
+                currentIndex = (currentIndex - 1 + list.length) % list.length;
+                updateCard();
+            }, 200);
+        }
+
+        /* ---------------- Touch & Swipe Handling ---------------- */
+        let touchStartX = 0;
+        let touchStartY = 0;
+        const cardArea = document.getElementById('card');
+
+        cardArea.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+        }, { passive: true });
+
+        cardArea.addEventListener('touchend', (e) => {
+            let touchEndX = e.changedTouches[0].clientX;
+            let touchEndY = e.changedTouches[0].clientY;
+            
+            let diffX = touchStartX - touchEndX;
+            let diffY = touchStartY - touchEndY;
+
+            // Ensure horizontal swipe is dominant
+            if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 40) {
+                if (diffX > 0) {
+                    nextCard(); // Swiped Left -> Next
+                } else {
+                    prevCard(); // Swiped Right -> Previous
+                }
+            }
+        }, { passive: true });
+    </script>
+</body>
+</html>
